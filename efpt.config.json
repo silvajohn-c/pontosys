@@ -1,0 +1,83 @@
+﻿{
+   "CodeGenerationMode": 2,
+   "ContextClassName": "PontosysContext",
+   "ContextNamespace": null,
+   "DefaultDacpacSchema": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": false,
+   "ModelNamespace": null,
+   "OutputContextPath": "Data\/Context",
+   "OutputPath": "Domain\/Entities",
+   "ProjectRootNamespace": "pontosys",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 0,
+   "SelectedToBeGenerated": 0,
+   "Tables": [
+      {
+         "Name": "[dbo].[Cargos]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Contratos]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Expedientes]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Funcionarios]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[HorasExtras]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ModalidadesContratos]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ModalidadesHorasExtras]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Ocorrencias]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[PeriodosHorasExtras]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[RegistrosPontos]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[StatusOcorrencias]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[TiposOcorrencias]",
+         "ObjectType": 0
+      }
+   ],
+   "UiHint": "DESKTOP-919QLP9.pontosys",
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": false,
+   "UseDbContextSplitting": false,
+   "UseFluentApiOnly": true,
+   "UseHandleBars": false,
+   "UseHierarchyId": false,
+   "UseInflector": true,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
+   "UseNoConstructor": true,
+   "UseNoDefaultConstructor": false,
+   "UseNoNavigations": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": false,
+   "UseSchemaFolders": false,
+   "UseSpatial": false
+}
