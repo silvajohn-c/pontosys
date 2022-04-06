@@ -6,15 +6,6 @@ namespace pontosys.Data.Context
 {
     public partial class PontosysContext : DbContext
     {
-        public PontosysContext()
-        {
-        }
-
-        public PontosysContext(DbContextOptions<PontosysContext> options)
-            : base(options)
-        {
-        }
-
         public virtual DbSet<Cargo> Cargos { get; set; }
         public virtual DbSet<Contrato> Contratos { get; set; }
         public virtual DbSet<Expediente> Expedientes { get; set; }

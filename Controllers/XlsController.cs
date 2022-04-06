@@ -10,9 +10,7 @@ namespace pontosys.Application.Controllers
     [ApiController]
     public class XlsController : ControllerBase
     {
-
         private readonly IRepository service;
-
         public XlsController(IRepository service)
         {
             this.service = service;
@@ -21,12 +19,10 @@ namespace pontosys.Application.Controllers
         [HttpPost("Upload")]
         public async Task<IActionResult> Upload(IFormFile file)
         {
-            var results =
-                new ExcelMapper(file.OpenReadStream()).Fetch<XlsModel>();
+            var results = new ExcelMapper(file.OpenReadStream()).Fetch<XlsModel>();
 
             foreach (var registro in results)
             {
-                //Set Funcionario                
                 Funcionario funcionario = this.service.GetFuncionarioByCpf(registro.Cpf);
 
                 if (funcionario == null)
@@ -36,21 +32,8 @@ namespace pontosys.Application.Controllers
                     funcionario.Sobrenome = registro.Sobrenome;
                     funcionario.Cpf = registro.Cpf;
                     this.service.Add(funcionario);
-
-                    try
-                    {
-                        await this.service.SaveChanges();
-                    }
-                    catch (DbUpdateException ex)
-                    {
-                        return this
-                            .StatusCode(StatusCodes
-                            .Status500InternalServerError,
-                            $"Falha ao inserir funcionário: {ex.Message}");
-                    }
                 }
 
-                //Set Cargo
                 Cargo cargo = this.service.GetCargoByName(registro.Cargo);
 
                 if (cargo == null)
@@ -58,21 +41,8 @@ namespace pontosys.Application.Controllers
                     cargo = new Cargo();
                     cargo.Nome = registro.Cargo;
                     this.service.Add(cargo);
-
-                    try
-                    {
-                        await this.service.SaveChanges();
-                    }
-                    catch (DbUpdateException ex)
-                    {
-                        return this
-                            .StatusCode(StatusCodes
-                            .Status500InternalServerError,
-                            $"Falha ao inserir cargo: {ex.Message}");
-                    }
                 }
 
-                //Set Expediente
                 Expediente expediente = this.service.GetExpedienteByValue(registro.CargaHoraria);
 
                 if (expediente == null)
@@ -80,21 +50,8 @@ namespace pontosys.Application.Controllers
                     expediente = new Expediente();
                     expediente.CargaHoraria = registro.CargaHoraria;
                     this.service.Add(expediente);
-
-                    try
-                    {
-                        await this.service.SaveChanges();
-                    }
-                    catch (DbUpdateException ex)
-                    {
-                        return this
-                            .StatusCode(StatusCodes
-                                .Status500InternalServerError,
-                            $"Falha ao inserir expediente: {ex.Message}");
-                    }
                 }
 
-                //Set ModalidadeContrato
                 ModalidadeContrato modalidadeContrato = this.service.GetModalidadeContratoByName(registro.ModalidadeContrato);
 
                 if (modalidadeContrato == null)
@@ -102,21 +59,8 @@ namespace pontosys.Application.Controllers
                     modalidadeContrato = new ModalidadeContrato();
                     modalidadeContrato.Nome = registro.ModalidadeContrato;
                     this.service.Add(modalidadeContrato);
-
-                    try
-                    {
-                        await this.service.SaveChanges();
-                    }
-                    catch (DbUpdateException ex)
-                    {
-                        return this
-                            .StatusCode(StatusCodes
-                            .Status500InternalServerError,
-                            $"Falha ao inserir modalidade de contrato: {ex.Message}");
-                    }
                 }
 
-                //Set Contrato
                 Contrato contrato = this.service.GetContratoByForeignKeys(funcionario.Id, cargo.Id, expediente.Id, modalidadeContrato.Id, registro.InicioContrato);
 
                 if (contrato == null)
@@ -129,22 +73,22 @@ namespace pontosys.Application.Controllers
                     contrato.DataInicio = registro.InicioContrato;
                     contrato.DataFim = registro.FimContrato;
                     this.service.Add(contrato);
+                }
 
-                    try
-                    {
-                        await this.service.SaveChanges();
-                    }
-                    catch (DbUpdateException ex)
-                    {
-                        return this
-                            .StatusCode(StatusCodes
-                                .Status500InternalServerError,
-                            $"Falha ao inserir contrato: {ex.Message}");
-                    }
+                try
+                {
+                    await this.service.SaveChanges();
+                }
+                catch (DbUpdateException ex)
+                {
+                    return this
+                        .StatusCode(StatusCodes
+                            .Status500InternalServerError,
+                        $"Falha ao inserir os dados no banco: {ex.Message}");
                 }
             }
 
-            return Ok();
+            return Ok("Dados inseridos com sucesso!");
         }
     }
 }
