@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using pontosys.Data.Context;
+using pontosys.Data.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,8 @@ builder.Services.AddDbContext<PontosysContext>(
     {
         options.UseSqlServer(builder.Configuration.GetConnectionString("PontoSysDB"));
     });
+
+builder.Services.AddScoped<IRepository, Repository>();
 
 var app = builder.Build();
 

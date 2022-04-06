@@ -9,5 +9,7 @@
         public int CargaHoraria { get; set; }
         public string ModalidadeContrato { get; set; } = "";
         public DateTime InicioContrato { get; set; }
+        public DateTime FimContrato { get; set; }
+
     }
 }
