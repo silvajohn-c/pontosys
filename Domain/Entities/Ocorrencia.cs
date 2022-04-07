@@ -7,6 +7,7 @@
         public string StatusOcorrenciaId { get; set; }
         public string TipoOcorrenciaId { get; set; }
         public string FuncionarioId { get; set; }
+        public DateTime Data { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime? UpdatedAt { get; set; }
         public bool Ativo { get; set; } = true;

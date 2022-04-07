@@ -49,5 +49,42 @@ namespace pontosys.Data.Repository
             return this.context.Contratos
                 .FirstOrDefault(x => x.FuncionarioId == funcionarioId && x.CargoId == cargoId && x.ExpedienteId == expedienteId && x.ModalidadeContratoId == modalidadeContratoId && x.DataInicio == inicioContrato);
         }
+
+        public Ocorrencia GetOcorrenciaByDate(DateTime data, string funcionarioId)
+        {
+            return this.context.Ocorrencias
+                .FirstOrDefault(x => x.Data == data && x.FuncionarioId == funcionarioId);
+        }
+
+        public TipoOcorrencia GetTipoOcorrenciaByDescricao(string descricao)
+        {
+            return this.context.TiposOcorrencias
+                .FirstOrDefault(x => x.Descricao == descricao);
+        }
+        public StatusOcorrencia GetStatusOcorrenciaByName(string nome)
+        {
+            return this.context.StatusOcorrencias
+                .FirstOrDefault(x => x.Nome == nome);
+        }
+        public RegistroPonto GetRegistroPontoDate(DateTime data)
+        {
+            return this.context.RegistrosPontos
+                .FirstOrDefault(x => x.CreatedAt == data);
+        }
+        public HoraExtra GetHoraExtra(DateTime data, string funcionarioId)
+        {
+            return this.context.HorasExtras
+                .FirstOrDefault(x => x.CreatedAt == data && x.FuncionarioId == funcionarioId);
+        }
+        public ModalidadeHoraExtra GetModalidadeHoraExtraByValue(float porcentagem)
+        {
+            return this.context.ModalidadesHorasExtras
+                .FirstOrDefault(x => x.Valor == porcentagem);
+        }
+        public PeriodoHoraExtra GetPeriodoHoraExtraByDescricao(string descricao)
+        {
+            return this.context.PeriodosHorasExtras
+                .FirstOrDefault(x => x.Descricao == descricao);
+        }
     }
 }
