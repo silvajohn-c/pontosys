@@ -80,9 +80,9 @@ namespace pontosys.Application.Controllers
                         }
                     }else{
                         return this
-                        .StatusCode(StatusCodes
-                            .Status400BadRequest,
-                        $"Dados insuficientes para criar um contrato com o cpf {registro.Cpf}");
+                            .StatusCode(StatusCodes
+                                .Status400BadRequest,
+                            $"Dados insuficientes para registrar funcionário de cpf {registro.Cpf}. Nenhum dado foi adicionado ao banco.");
                     }
 
                     if (!String.IsNullOrEmpty(registro.Ocorrencia))
@@ -171,18 +171,20 @@ namespace pontosys.Application.Controllers
                             this.service.Add(horaExtra);
                         }
                     }
+
                 }
+            }
+            
             try
-                {
-                    await this.service.SaveChanges();
-                }
-                catch (DbUpdateException ex)
-                {
-                    return this
-                        .StatusCode(StatusCodes
-                            .Status500InternalServerError,
-                        $"Falha ao inserir os dados no banco: {ex.Message}");
-                }
+            {
+                await this.service.SaveChanges();
+            }
+            catch (DbUpdateException ex)
+            {
+                return this
+                    .StatusCode(StatusCodes
+                        .Status500InternalServerError,
+                    $"Falha ao inserir os dados no banco: {ex.Message}");
             }
 
             return Ok("Dados inseridos com sucesso!");
