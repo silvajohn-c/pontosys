@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using pontosys.Data.Context;
 
@@ -11,9 +12,10 @@ using pontosys.Data.Context;
 namespace pontosys.Migrations
 {
     [DbContext(typeof(PontosysContext))]
-    partial class PontosysContextModelSnapshot : ModelSnapshot
+    [Migration("20220407014647_DateOcorrencia")]
+    partial class DateOcorrencia
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
