@@ -23,7 +23,8 @@ namespace pontosys.Application.Controllers
 
             foreach (var registro in results)
             {
-                if (!(registro.Cpf == default(long))){
+                if (registro.Cpf != default(long)){
+
                     Funcionario funcionario = this.service.GetFuncionarioByCpf(registro.Cpf);
 
                         if (funcionario == null)
@@ -34,11 +35,10 @@ namespace pontosys.Application.Controllers
                             funcionario.Cpf = registro.Cpf;
                             this.service.Add(funcionario);
                         }
-                    
 
                     Cargo cargo = this.service.GetCargoByName(registro.Cargo);
 
-                    if (cargo == null)
+                    if (cargo == null && !String.IsNullOrEmpty(registro.Cargo))
                     {
                         cargo = new Cargo();
                         cargo.Nome = registro.Cargo;
@@ -47,7 +47,7 @@ namespace pontosys.Application.Controllers
 
                     Expediente expediente = this.service.GetExpedienteByValue(registro.CargaHoraria);
 
-                    if (expediente == null)
+                    if (expediente == null && registro.CargaHoraria != default(int))
                     {
                         expediente = new Expediente();
                         expediente.CargaHoraria = registro.CargaHoraria;
@@ -56,28 +56,36 @@ namespace pontosys.Application.Controllers
 
                     ModalidadeContrato modalidadeContrato = this.service.GetModalidadeContratoByName(registro.ModalidadeContrato);
 
-                    if (modalidadeContrato == null)
+                    if (modalidadeContrato == null && !String.IsNullOrEmpty(registro.ModalidadeContrato))
                     {
                         modalidadeContrato = new ModalidadeContrato();
                         modalidadeContrato.Nome = registro.ModalidadeContrato;
                         this.service.Add(modalidadeContrato);
                     }
 
-                    Contrato contrato = this.service.GetContratoByForeignKeys(funcionario.Id, cargo.Id, expediente.Id, modalidadeContrato.Id, registro.InicioContrato);
-
-                    if (contrato == null)
+                    if(cargo != null && modalidadeContrato != null && expediente != null)
                     {
-                        contrato = new Contrato();
-                        contrato.FuncionarioId = funcionario.Id;
-                        contrato.CargoId = cargo.Id;
-                        contrato.ExpedienteId = expediente.Id;
-                        contrato.ModalidadeContratoId = modalidadeContrato.Id;
-                        contrato.DataInicio = registro.InicioContrato;
-                        contrato.DataFim = registro.FimContrato;
-                        this.service.Add(contrato);
+                        Contrato contrato = this.service.GetContratoByForeignKeys(funcionario.Id, cargo.Id, expediente.Id, modalidadeContrato.Id, registro.InicioContrato);
+                        
+                        if (contrato == null && (!String.IsNullOrEmpty(registro.Cargo) || cargo != null) && (registro.CargaHoraria != default(int) || expediente != null) && (!String.IsNullOrEmpty(registro.ModalidadeContrato) || modalidadeContrato != null) && registro.InicioContrato != default(DateTime))
+                        {
+                            contrato = new Contrato();
+                            contrato.FuncionarioId = funcionario.Id;
+                            contrato.CargoId = cargo.Id;
+                            contrato.ExpedienteId = expediente.Id;
+                            contrato.ModalidadeContratoId = modalidadeContrato.Id;
+                            contrato.DataInicio = registro.InicioContrato;
+                            contrato.DataFim = registro.FimContrato;
+                            this.service.Add(contrato);
+                        }
+                    }else{
+                        return this
+                        .StatusCode(StatusCodes
+                            .Status400BadRequest,
+                        $"Dados insuficientes para criar um contrato com o cpf {registro.Cpf}");
                     }
 
-                    if (!(registro.Ocorrencia == null))
+                    if (!String.IsNullOrEmpty(registro.Ocorrencia))
                     {
 
                         Ocorrencia ocorrencia = this.service.GetOcorrenciaByDate(registro.DataOcorrencia, funcionario.Id);
@@ -116,7 +124,7 @@ namespace pontosys.Application.Controllers
                         }
                     }
             
-                    if (!(registro.RegistroPonto == default(DateTime)))
+                    if (registro.RegistroPonto != default(DateTime))
                     {
                     RegistroPonto registroPonto = this.service.GetRegistroPontoDate(registro.RegistroPonto);
 
@@ -129,7 +137,7 @@ namespace pontosys.Application.Controllers
                         }
                     }
 
-                    if (!(registro.HoraExtra == default(int)))
+                    if (registro.HoraExtra != default(int))
                     {
                     HoraExtra horaExtra = this.service.GetHoraExtra(registro.DataHoraExtra, funcionario.Id);
                         
@@ -163,18 +171,17 @@ namespace pontosys.Application.Controllers
                             this.service.Add(horaExtra);
                         }
                     }
-
-                    try
-                    {
-                        await this.service.SaveChanges();
-                    }
-                    catch (DbUpdateException ex)
-                    {
-                        return this
-                            .StatusCode(StatusCodes
-                                .Status500InternalServerError,
-                            $"Falha ao inserir os dados no banco: {ex.Message}");
-                    }
+                }
+            try
+                {
+                    await this.service.SaveChanges();
+                }
+                catch (DbUpdateException ex)
+                {
+                    return this
+                        .StatusCode(StatusCodes
+                            .Status500InternalServerError,
+                        $"Falha ao inserir os dados no banco: {ex.Message}");
                 }
             }
 
