@@ -25,7 +25,7 @@ namespace pontosys.Application.Controllers
 
             foreach (var linha in planilha)
             {
-                Funcionario funcionario = this.service.AddFuncionario(linha.Cpf, linha.Nome, linha.Sobrenome);
+                Funcionario funcionario = this.service.GetFuncionario(linha.Cpf, linha.Nome, linha.Sobrenome);
                 
                 if (funcionario == null)
                 {                            
@@ -36,12 +36,12 @@ namespace pontosys.Application.Controllers
 
                     FuncionarioValidator funcionarioValidator = new();
                     var validatorResult = funcionarioValidator.Validate(funcionario);
-                    if (!validatorResult.IsValid) return StatusCode(StatusCodes.Status400BadRequest, this.service.validationErrors(validatorResult) + $"Funcionario de CPF: {linha.Cpf}");
+                    if (!validatorResult.IsValid) return StatusCode(StatusCodes.Status400BadRequest, this.service.GetValidationErrors(validatorResult) + $"Funcionario de CPF: {linha.Cpf}");
                     
                     this.service.Add(funcionario);
                 }
 
-                Cargo cargo = this.service.AddCargo(linha.Cargo);
+                Cargo cargo = this.service.GetCargo(linha.Cargo);
 
                 if (cargo == null && !String.IsNullOrEmpty(linha.Cargo))
                 {
@@ -50,12 +50,12 @@ namespace pontosys.Application.Controllers
 
                     CargoValidator cargoValidator = new();
                     var validatorResult = cargoValidator.Validate(cargo);
-                    if (!validatorResult.IsValid) return StatusCode(StatusCodes.Status400BadRequest, this.service.validationErrors(validatorResult) + $"Funcionario de CPF: {linha.Cpf}");
+                    if (!validatorResult.IsValid) return StatusCode(StatusCodes.Status400BadRequest, this.service.GetValidationErrors(validatorResult) + $"Funcionario de CPF: {linha.Cpf}");
 
                     this.service.Add(cargo);
                 }
 
-                Expediente expediente = this.service.AddExpediente(linha.CargaHoraria);
+                Expediente expediente = this.service.GetExpediente(linha.CargaHoraria);
                 
                 if (expediente == null && linha.CargaHoraria != default(int))
                 {
@@ -64,12 +64,12 @@ namespace pontosys.Application.Controllers
 
                     ExpedienteValidator expedienteValidator = new();
                     var validatorResult = expedienteValidator.Validate(expediente);
-                    if (!validatorResult.IsValid) return StatusCode(StatusCodes.Status400BadRequest, this.service.validationErrors(validatorResult) + $"Funcionario de CPF: {linha.Cpf}");
+                    if (!validatorResult.IsValid) return StatusCode(StatusCodes.Status400BadRequest, this.service.GetValidationErrors(validatorResult) + $"Funcionario de CPF: {linha.Cpf}");
 
                     this.service.Add(expediente);
                 }
 
-                ModalidadeContrato modalidadeContrato = this.service.AddModalidadeContrato(linha.ModalidadeContrato);
+                ModalidadeContrato modalidadeContrato = this.service.GetModalidadeContrato(linha.ModalidadeContrato);
                 if (modalidadeContrato == null && !String.IsNullOrEmpty(linha.ModalidadeContrato))
                 {
                     modalidadeContrato = new ModalidadeContrato();
@@ -77,13 +77,13 @@ namespace pontosys.Application.Controllers
 
                     ModalidadeContratoValidator modalidadeContratoValidator = new();
                     var validatorResult = modalidadeContratoValidator.Validate(modalidadeContrato);
-                    if (!validatorResult.IsValid) return StatusCode(StatusCodes.Status400BadRequest, this.service.validationErrors(validatorResult) + $"Funcionario de CPF: {linha.Cpf}");
+                    if (!validatorResult.IsValid) return StatusCode(StatusCodes.Status400BadRequest, this.service.GetValidationErrors(validatorResult) + $"Funcionario de CPF: {linha.Cpf}");
                     this.service.Add(modalidadeContrato);
                 }
 
-                Contrato contrato = this.service.AddContrato(funcionario, cargo, expediente, modalidadeContrato, linha.InicioContrato, linha.FimContrato);
+                Contrato contrato = this.service.GetContrato(funcionario, cargo, expediente, modalidadeContrato, linha.InicioContrato, linha.FimContrato);
 
-                if (contrato == null && linha.InicioContrato != default(DateTime))
+                if (contrato == null && linha.InicioContrato != default(DateTime) && cargo != null && expediente != null && modalidadeContrato != null)
                 {
                     contrato = new Contrato();
                     contrato.FuncionarioId = funcionario.Id;
@@ -95,18 +95,22 @@ namespace pontosys.Application.Controllers
 
                     ContratoValidator contratoValidator = new();
                     var validatorResult = contratoValidator.Validate(contrato);
-                    if (!validatorResult.IsValid) return StatusCode(StatusCodes.Status400BadRequest, this.service.validationErrors(validatorResult) + $"Funcionario de CPF: {linha.Cpf}");
+                    if (!validatorResult.IsValid) return StatusCode(StatusCodes.Status400BadRequest, this.service.GetValidationErrors(validatorResult) + $"Funcionario de CPF: {linha.Cpf}");
 
                     this.service.Add(contrato);
                 }
 
                 if (contrato == null) return this.StatusCode(StatusCodes.Status400BadRequest,$"Dados insuficientes para registrar funcionario de cpf {funcionario.Cpf}"); 
             
-                if (linha.RegistroPonto != default(DateTime)){
-                    try{
+                if (linha.RegistroPonto != default(DateTime))
+                {
+                    try
+                    {
                         this.service.AddRegistroPonto(linha.RegistroPonto, funcionario.Id);
-                    }catch{
-                        return this.StatusCode(StatusCodes.Status400BadRequest,$"Formato de ponto inválido para o funcionário de cpf {funcionario.Cpf}"); 
+                    }
+                    catch (SystemException ex)
+                    {
+                        return this.StatusCode(StatusCodes.Status400BadRequest,$"Formato de ponto inválido para o funcionário de cpf {funcionario.Cpf}. {ex.Message}"); 
                     }
                 }
             }
@@ -119,6 +123,7 @@ namespace pontosys.Application.Controllers
             {
                 return this.StatusCode(StatusCodes.Status500InternalServerError,$"Falha ao inserir os dados no banco: {ex.Message}");
             }
+
             return Ok("Dados inseridos com sucesso!");
         }
     }

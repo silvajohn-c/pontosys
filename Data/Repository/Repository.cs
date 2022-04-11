@@ -20,7 +20,7 @@ namespace pontosys.Data.Repository
         {
             return this.context.SaveChangesAsync();
         }
-        public Funcionario AddFuncionario(long cpf, string nome, string sobrenome)
+        public Funcionario GetFuncionario(long cpf, string nome, string sobrenome)
         {
 
             foreach (var entity in this.context.Funcionarios.Local)
@@ -32,7 +32,7 @@ namespace pontosys.Data.Repository
                 
             return funcionario;
         }
-        public Cargo AddCargo(string nome)
+        public Cargo GetCargo(string nome)
         {
             foreach (var entity in this.context.Cargos.Local)
             {
@@ -44,7 +44,7 @@ namespace pontosys.Data.Repository
             return cargo;
         }
 
-        public Expediente AddExpediente(int cargaHoraria)
+        public Expediente GetExpediente(int cargaHoraria)
         {
             foreach (var entity in this.context.Expedientes.Local)
             {
@@ -56,7 +56,7 @@ namespace pontosys.Data.Repository
             return expediente;
         }
 
-        public ModalidadeContrato AddModalidadeContrato(string nome)
+        public ModalidadeContrato GetModalidadeContrato(string nome)
         {
             foreach (var entity in this.context.ModalidadesContratos.Local)
             {
@@ -68,7 +68,7 @@ namespace pontosys.Data.Repository
             return modalidadeContrato;
         }
 
-        public Contrato AddContrato(Funcionario funcionario, Cargo cargo, Expediente expediente, ModalidadeContrato modalidadeContrato, DateTime inicioContrato, DateTime fimContrato)
+        public Contrato GetContrato(Funcionario funcionario, Cargo cargo, Expediente expediente, ModalidadeContrato modalidadeContrato, DateTime inicioContrato, DateTime fimContrato)
         {
             if(cargo != null && modalidadeContrato != null && expediente != null)
             {
@@ -104,7 +104,7 @@ namespace pontosys.Data.Repository
                 }
         }
 
-        public string validationErrors(FluentValidation.Results.ValidationResult validatorResult)
+        public string GetValidationErrors(FluentValidation.Results.ValidationResult validatorResult)
         {
             string erros = "";
             
