@@ -29,15 +29,6 @@ namespace pontosys.Data.Repository
             }
 
             Funcionario funcionario = this.context.Funcionarios.FirstOrDefault(x => x.Cpf.Equals(cpf));
-
-            if (funcionario == null)
-            {                            
-                funcionario = new Funcionario();
-                funcionario.Cpf = cpf;
-                funcionario.Nome = nome;
-                funcionario.Sobrenome = sobrenome;
-                this.context.Add(funcionario);
-            }
                 
             return funcionario;
         }
@@ -50,13 +41,6 @@ namespace pontosys.Data.Repository
 
             Cargo cargo = this.context.Cargos.FirstOrDefault(x => x.Nome == nome);
 
-            if (cargo == null && !String.IsNullOrEmpty(nome))
-            {
-                cargo = new Cargo();
-                cargo.Nome = nome;
-                this.context.Add(cargo);
-            }
-
             return cargo;
         }
 
@@ -68,13 +52,6 @@ namespace pontosys.Data.Repository
             }
 
             Expediente expediente = this.context.Expedientes.FirstOrDefault(x => x.CargaHoraria == cargaHoraria);
-
-            if (expediente == null && cargaHoraria != default(int))
-            {
-                expediente = new Expediente();
-                expediente.CargaHoraria = cargaHoraria;
-                this.context.Add(expediente);
-            }
             
             return expediente;
         }
@@ -87,13 +64,6 @@ namespace pontosys.Data.Repository
             }
             
             ModalidadeContrato modalidadeContrato = this.context.ModalidadesContratos.FirstOrDefault(x => x.Nome == nome);
-
-            if (modalidadeContrato == null && !String.IsNullOrEmpty(nome))
-            {
-                modalidadeContrato = new ModalidadeContrato();
-                modalidadeContrato.Nome = nome;
-                this.context.Add(modalidadeContrato);
-            }
 
             return modalidadeContrato;
         }
@@ -109,19 +79,6 @@ namespace pontosys.Data.Repository
                 }
 
                 Contrato contrato = this.context.Contratos.FirstOrDefault(x => x.FuncionarioId == funcionario.Id && x.CargoId == cargo.Id && x.ExpedienteId == expediente.Id && x.ModalidadeContratoId == modalidadeContrato.Id && x.DataInicio == inicioContrato);
-                
-                if (contrato == null && inicioContrato != default(DateTime))
-                {
-                    contrato = new Contrato();
-                    contrato.FuncionarioId = funcionario.Id;
-                    contrato.CargoId = cargo.Id;
-                    contrato.ExpedienteId = expediente.Id;
-                    contrato.ModalidadeContratoId = modalidadeContrato.Id;
-                    contrato.DataInicio = inicioContrato;
-                    contrato.DataFim = fimContrato;
-                    this.context.Add(contrato);
-                    return contrato;
-                }
 
                 return contrato;
             }
@@ -131,8 +88,6 @@ namespace pontosys.Data.Repository
         }
         public void AddRegistroPonto(DateTime data, string funcionarioId)
         {
-            if (data != default(DateTime))
-            {
                 foreach (var entity in this.context.RegistrosPontos.Local)
                 {
                     if(entity.CreatedAt == data && entity.FuncionarioId == funcionarioId) return;
@@ -147,7 +102,18 @@ namespace pontosys.Data.Repository
                     registroPonto.FuncionarioId = funcionarioId;
                     this.context.Add(registroPonto);
                 }
+        }
+
+        public string validationErrors(FluentValidation.Results.ValidationResult validatorResult)
+        {
+            string erros = "";
+            
+            foreach (var item in validatorResult.Errors)
+            {
+                erros += item.ErrorMessage + "\n";
             }
+
+            return erros;
         }
     }
 }

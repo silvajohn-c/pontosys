@@ -12,5 +12,7 @@ namespace pontosys.Data.Repository
         ModalidadeContrato AddModalidadeContrato(string nome);
         Contrato AddContrato(Funcionario funcionario, Cargo cargo, Expediente expediente, ModalidadeContrato modalidadeContrato, DateTime inicioContrato, DateTime fimContrato);
         void AddRegistroPonto(DateTime data,string funcionarioId);
+
+        string validationErrors(FluentValidation.Results.ValidationResult validatorResult);
     }
 }
