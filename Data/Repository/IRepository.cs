@@ -6,20 +6,11 @@ namespace pontosys.Data.Repository
     {
         void Add<T>(T entity) where T : class;
         Task<int> SaveChanges();
-        Funcionario GetFuncionarioByCpf(long cpf);
-        Cargo GetCargoByName(string cargo);
-        Expediente GetExpedienteByValue(int cargaHoraria);
-        ModalidadeContrato GetModalidadeContratoByName(string modalidadeContrato);
-        Contrato GetContratoByForeignKeys(string funcionarioId, string cargoId, string expedienteId, string modalidadeContratoId, DateTime inicioContrato);
-        Ocorrencia GetOcorrenciaByDate(DateTime data, string funcionarioId);
-        TipoOcorrencia GetTipoOcorrenciaByDescricao(string descricao);
-        StatusOcorrencia GetStatusOcorrenciaByName(string nome);
-
-        RegistroPonto GetRegistroPontoDate(DateTime data);
-        HoraExtra GetHoraExtra(DateTime data, string funcionarioId);
-
-        ModalidadeHoraExtra GetModalidadeHoraExtraByValue(float porcentagem);
-
-        PeriodoHoraExtra GetPeriodoHoraExtraByDescricao(string nome);
+        Funcionario AddFuncionario(long cpf, string nome, string sobrenome);
+        Cargo AddCargo(string cargo);
+        Expediente AddExpediente(int cargaHoraria);
+        ModalidadeContrato AddModalidadeContrato(string nome);
+        Contrato AddContrato(Funcionario funcionario, Cargo cargo, Expediente expediente, ModalidadeContrato modalidadeContrato, DateTime inicioContrato, DateTime fimContrato);
+        void AddRegistroPonto(DateTime data,string funcionarioId);
     }
 }
