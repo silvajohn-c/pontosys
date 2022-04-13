@@ -20,7 +20,7 @@ namespace pontosys.Data.Repository
         {
             return this.context.SaveChangesAsync();
         }
-        public Funcionario GetFuncionario(long cpf, string nome, string sobrenome)
+        public Funcionario GetFuncionario(long cpf)
         {
 
             foreach (var entity in this.context.Funcionarios.Local)
@@ -68,7 +68,7 @@ namespace pontosys.Data.Repository
             return modalidadeContrato;
         }
 
-        public Contrato GetContrato(Funcionario funcionario, Cargo cargo, Expediente expediente, ModalidadeContrato modalidadeContrato, DateTime inicioContrato, DateTime fimContrato)
+        public Contrato GetContrato(Funcionario funcionario, Cargo cargo, Expediente expediente, ModalidadeContrato modalidadeContrato, DateTime inicioContrato)
         {
             if(cargo != null && modalidadeContrato != null && expediente != null)
             {
